@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const validator = require('validator');
 const Schema = mongoose.Schema;
 
 // Create Schema
@@ -12,7 +13,12 @@ const ContactSchema = new Schema({
   },
   email: {
     type: String,
-    // SERVER SIDE VALIDATION HERE
+    validate: {
+      validator: function(email) {
+        return validator.isEmail(email);
+      },
+      message: (props) => `${props.value} is not a valid email.`,
+    },
   },
   mobile: {
     type: Number,
