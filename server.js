@@ -1,6 +1,7 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
+const path = require('path');
 
 const contacts = require('./routes/api/contacts');
 
@@ -21,6 +22,16 @@ mongoose
 // Use Routes
 // Any request that goes through /api/contacts will go through the contacts routes as defined above
 app.use('/api/contacts', contacts);
+
+// Serve static assets if in production
+if (process.env.NODE_ENV === 'production') {
+  // Set static folder
+  app.use(express.static('client/build'));
+
+  app.get('*', (req, res) => {
+    res.sendFile(path.resolve(__dirname, 'client', 'build', 'index.html'));
+  });
+}
 
 // Set port to environment variable for heroku to use, or use localhost 5000
 const port = process.env.PORT || 7000;
